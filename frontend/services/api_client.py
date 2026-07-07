@@ -15,8 +15,13 @@ def _backend_url() -> str:
 
 
 def _auth_headers(access_token: str) -> Dict[str, str]:
-    return {"Authorization": f"Bearer {access_token}"}
+    return { "Authorization": f"Bearer {access_token}"}
 
+def _auth_headers_with_user(access_token: str, user_id: str) -> Dict[str, str]:
+    return {
+        "Authorization": f"Bearer {access_token}",
+        "X-User-ID": user_id,
+    }
 
 def health_check() -> Dict[str, Any]:
     response = requests.get(f"{_backend_url()}/api/v1/health", timeout=10)
@@ -27,12 +32,15 @@ def health_check() -> Dict[str, Any]:
 def analyze_resume(
     resume_file,
     access_token: str,
+    user_id: str,
     job_description: str = "",
 ) -> Dict[str, Any]:
     files = {
         "resume": (resume_file.name, resume_file.getvalue(), resume_file.type),
     }
-    data = {"job_description": job_description}
+    data = {"job_description": job_description,
+            "user_id": user_id, 
+    }
     response = requests.post(
         f"{_backend_url()}/api/v1/analyze-resume",
         files=files,
@@ -40,24 +48,26 @@ def analyze_resume(
         headers=_auth_headers(access_token),
         timeout=180,
     )
+    print("Status:", response.status_code)
+    print("Response:", response.text)
     response.raise_for_status()
     return response.json()
 
 
-def get_history(access_token: str) -> List[Dict[str, Any]]:
+def get_history(access_token: str, user_id:str) -> List[Dict[str, Any]]:
     response = requests.get(
         f"{_backend_url()}/api/v1/history",
-        headers=_auth_headers(access_token),
+        headers=_auth_headers_with_user(access_token, user_id),
         timeout=30,
     )
     response.raise_for_status()
     return response.json()
 
 
-def delete_history_entry(analysis_id: str, access_token: str) -> None:
+def delete_history_entry(analysis_id: str, access_token: str, user_id: str) -> None:
     response = requests.delete(
         f"{_backend_url()}/api/v1/history/{analysis_id}",
-        headers=_auth_headers(access_token),
+        headers=_auth_headers_with_user(access_token, user_id),
         timeout=30,
     )
     response.raise_for_status()

@@ -186,7 +186,8 @@ def render() -> None:
         return
 
     access_token = st.session_state.get("access_token")
-    if not access_token:
+    user_id = st.session_state.get("user_id")
+    if not access_token or not user_id:
         st.warning("⚠️ Sign in from the sidebar to analyze a resume.")
         return
 
@@ -212,6 +213,7 @@ def render() -> None:
             analysis = api_client.analyze_resume(
                 resume_file=resume_file,
                 access_token=access_token,
+                user_id=user_id,
                 job_description=job_description,
             )
     except requests.RequestException as exc:

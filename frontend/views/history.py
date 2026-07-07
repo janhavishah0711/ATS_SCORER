@@ -18,12 +18,14 @@ def render() -> None:
     st.markdown("Past analyses saved against your account.")
 
     access_token = st.session_state.get("access_token")
-    if not access_token:
+    user_id = st.session_state.get("user_id")
+    if not access_token or not user_id:
         st.warning("⚠️ Sign in from the sidebar to view your history.")
         return
 
     try:
-        history = api_client.get_history(access_token)
+        history = api_client.get_history(access_token,user_id)
+
     except requests.RequestException as exc:
         _show_backend_error(exc)
         return
