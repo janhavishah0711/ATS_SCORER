@@ -73,21 +73,27 @@ def delete_history_entry(analysis_id: str, access_token: str, user_id: str) -> N
     response.raise_for_status()
 
 
-def generate_pdf(analysis_data: Dict[str, Any], access_token: str) -> bytes:
+def generate_pdf(analysis_data: Dict[str, Any], access_token: str, user_id:str,) -> bytes:
+    headers = _auth_headers_with_user(access_token, user_id)
+
+    print("Sending headers:", headers)
+
     response = requests.post(
         f"{_backend_url()}/api/v1/generate-pdf",
         json=analysis_data,
-        headers=_auth_headers(access_token),
+        headers=_auth_headers_with_user(access_token, user_id),
         timeout=60,
     )
+    print("Status:", response.status_code)
+    print("Response:", response.text)
     response.raise_for_status()
     return response.content
 
 
-def get_history_pdf(analysis_id: str, access_token: str) -> bytes:
+def get_history_pdf(analysis_id: str, access_token: str, user_id: str,) -> bytes:
     response = requests.get(
         f"{_backend_url()}/api/v1/history/{analysis_id}/pdf",
-        headers=_auth_headers(access_token),
+        headers=_auth_headers_with_user(access_token, user_id),
         timeout=60,
     )
     response.raise_for_status()

@@ -123,9 +123,11 @@ def _render_export_buttons(analysis: dict) -> None:
         if st.button("📑 Generate PDF Report", use_container_width=True, type="primary"):
             try:
                 with st.spinner("Generating PDF on backend..."):
+                    print("User ID:", st.session_state.get("user_id"))
                     pdf_bytes = api_client.generate_pdf(
                         analysis,
                         access_token=st.session_state["access_token"],
+                        user_id=st.session_state["user_id"],
                     )
                 st.session_state["scorer_pdf_bytes"] = pdf_bytes
             except requests.RequestException as exc:

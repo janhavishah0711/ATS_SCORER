@@ -1,7 +1,8 @@
 # ATS Resume Scorer — combined backend + frontend dependencies.
 #
 # Install with:
-#     pip install -r requirements.txt
+#    
+
 #
 # After installing, download the spaCy model the backend uses at startup:
 #     python -m spacy download en_core_web_md

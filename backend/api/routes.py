@@ -27,6 +27,11 @@ async def analyze_resume(
     user_id: str = Form('', description='Clerk user ID for saving history (optional)'),
 ):
     warnings: List[str] = []
+    print("=" * 50)
+    print("analyze_resume called")
+    print("user_id =", user_id)
+    print("filename =", resume.filename)
+    print("=" * 50)
 
 
     nlp      = request.app.state.nlp
@@ -114,7 +119,9 @@ async def analyze_resume(
 
     try:
         from backend.database.supabase_db import save_analysis
+        print("Reached save_analysis")
         await save_analysis(user_id, filename, result)
+        print("Finished save_analysis")
     except Exception as exc:
         logger.warning(f'History save failed (non-blocking): {exc}')
 
@@ -161,13 +168,16 @@ async def delete_history_entry(
 
 @router.post('/generate-pdf')
 async def generate_pdf(
+    request: Request,
     data: AnalysisResponse,
-    user_id: str = Header(..., alias='X-User-ID'),
+    user_id: Optional[str] = Header(..., alias='X-User-ID'),
 ):
     from backend.services.report_generator import generate_html_reports
     from backend.services.pdf_export import generate_combined_pdf
     from fastapi.responses import Response
-
+    print("Received X-User-ID:", user_id)
+    print("ALL HEADERS:", dict(request.headers))
+    print("X-User-ID:", user_id)
     try:
         html_docs = generate_html_reports(data.model_dump())
         pdf_bytes = generate_combined_pdf(html_docs)
@@ -182,7 +192,7 @@ async def generate_pdf(
     except Exception as e:
         logger.error(f'Failed to generate PDF: {e}')
         raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {e}")
-    
+   
 
 @router.get('/history/{analysis_id}/pdf')
 async def generate_history_pdf(
