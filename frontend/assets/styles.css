@@ -1719,3 +1719,9 @@ Animation utility classes */
     max-width: 300px;
     margin: 0 auto;
 }
+.block-container {
+    max-width: 100%;
+    width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}

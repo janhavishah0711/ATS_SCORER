@@ -116,42 +116,42 @@ def _render_upload_area(analysis_mode: str):
 
 def _render_export_buttons(analysis: dict) -> None:
     st.markdown("### 📥 Export Results")
-    c1, c2 = st.columns(2)
+   
 
-    with c1:
+    #with c1:
         # Lazy: only call the backend the first time the user clicks expand.
-        if st.button("📑 Generate PDF Report", use_container_width=True, type="primary"):
-            try:
-                with st.spinner("Generating PDF on backend..."):
-                    print("User ID:", st.session_state.get("user_id"))
-                    pdf_bytes = api_client.generate_pdf(
-                        analysis,
-                        access_token=st.session_state["access_token"],
-                        user_id=st.session_state["user_id"],
-                    )
-                st.session_state["scorer_pdf_bytes"] = pdf_bytes
-            except requests.RequestException as exc:
-                _show_backend_error(exc)
+     #   if st.button("📑 Generate PDF Report", use_container_width=True, type="primary"):
+      #      try:
+      #          with st.spinner("Generating PDF on backend..."):
+      #              print("User ID:", st.session_state.get("user_id"))
+      #              pdf_bytes = api_client.generate_pdf(
+      #                  analysis,
+      #                  access_token=st.session_state["access_token"],
+      #                  user_id=st.session_state["user_id"],
+      #              )
+      #          st.session_state["scorer_pdf_bytes"] = pdf_bytes
+      #      except requests.RequestException as exc:
+      #          _show_backend_error(exc)
 
-        if "scorer_pdf_bytes" in st.session_state:
-            st.download_button(
-                "⬇️ Download PDF",
-                data=st.session_state["scorer_pdf_bytes"],
-                file_name="ats_resume_report.pdf",
-                mime="application/pdf",
-                use_container_width=True,
-                key="download_pdf_report",
-            )
+      #  if "scorer_pdf_bytes" in st.session_state:
+      #      st.download_button(
+      #          "⬇️ Download PDF",
+      #          data=st.session_state["scorer_pdf_bytes"],
+      #           file_name="ats_resume_report.pdf",
+      #          mime="application/pdf",
+      #          use_container_width=True,
+      #          key="download_pdf_report",
+      #      )
 
-    with c2:
-        st.download_button(
+    
+    st.download_button(
             "📄 Download Summary (.txt)",
             data=_summary_text(analysis),
             file_name="ats_summary.txt",
             mime="text/plain",
             use_container_width=True,
             key="download_summary",
-        )
+    )
 
 
 def render() -> None:
