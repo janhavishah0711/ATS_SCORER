@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter,  File, Form, Header, HTTPException, Request, UploadFile
 
@@ -166,32 +166,31 @@ async def delete_history_entry(
         raise HTTPException(status_code=500, detail=f'Could not delete: {exc}')
     
 
-@router.post('/generate-pdf')
-async def generate_pdf(
-    request: Request,
-    data: AnalysisResponse,
-    user_id: Optional[str] = Header(..., alias='X-User-ID'),
-):
-    from backend.services.report_generator import generate_html_reports
-    from backend.services.pdf_export import generate_combined_pdf
-    from fastapi.responses import Response
-    print("Received X-User-ID:", user_id)
-    print("ALL HEADERS:", dict(request.headers))
-    print("X-User-ID:", user_id)
-    try:
-        html_docs = generate_html_reports(data.model_dump())
-        pdf_bytes = generate_combined_pdf(html_docs)
+#@router.post('/generate-pdf')
+#async def generate_pdf(
+ #   request: Request,
+  #  data: AnalysisResponse,
+   # user_id: Optional[str] = Header(..., alias='X-User-ID'),
+#):#
+ #   from backend.services.report_generator import generate_html_reports
+  #  from backend.services.pdf_export import generate_combined_pdf
+   # from fastapi.responses import Response
+    #print("Received X-User-ID:", user_id)
+  #  print("ALL HEADERS:", dict(request.headers))
+  #  print("X-User-ID:", user_id)
+  #  try:
+  #      html_docs = generate_html_reports(data.model_dump())
+  #     pdf_bytes = generate_combined_pdf(html_docs)
 
-        return Response(
-            content=pdf_bytes,
-            media_type="application/pdf",
-            headers={
-                "Content-Disposition": "attachment; filename=ats_report.pdf"
-            }
-        )
-    except Exception as e:
-        logger.error(f'Failed to generate PDF: {e}')
-        raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {e}")
+  #      return Response(
+  #          content=pdf_bytes,
+  #          media_type="application/pdf",
+  #          headers={
+  #              "Content-Disposition": "attachment; filename=ats_report.pdf"         }
+   #     )
+   # except Exception as e:
+  #      logger.error(f'Failed to generate PDF: {e}')
+  #      raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {e}")
    
 
 @router.get('/history/{analysis_id}/pdf')
