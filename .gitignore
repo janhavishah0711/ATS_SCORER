@@ -15,3 +15,10 @@ __pycache__/
 
 .env
 backend/.env
+
+.venv/
+venv/
+
+*.pyc
+
+.pytest_cache/
