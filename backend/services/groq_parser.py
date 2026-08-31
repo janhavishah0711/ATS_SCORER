@@ -10,7 +10,7 @@ from backend.core.config import GROQ_API_KEY
 
 logger=logging.getLogger('ats_resume_scorer')
 
-GROQ_MODEL='llama-3.3-70b-versatile'
+GROQ_MODEL='openai/gpt-oss-120b'
 
 _client=None
 def _get_client() -> Groq:
